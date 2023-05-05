@@ -36,8 +36,8 @@ class VESC(object):
 
         # check firmware version and set GetValue fields to old values if pre version 3.xx
         version = self.get_firmware_version()
-        if int(version.split('.')[0]) < 3:
-            GetValues.fields = pre_v3_33_fields
+        #if int(version.split('.')[0]) < 3:
+        GetValues.fields = pre_v3_33_fields
 
         # store message info for getting values so it doesn't need to calculate it every time
         msg = GetValues()
@@ -136,7 +136,7 @@ class VESC(object):
         """
         :return: Current applied duty-cycle
         """
-        return self.get_measurements().duty_now
+        return self.get_measurements().duty_cycle_now
 
     def get_v_in(self):
         """
@@ -148,13 +148,22 @@ class VESC(object):
         """
         :return: Current motor current
         """
-        return self.get_measurements().current_motor
+        return self.get_measurements().avg_motor_current
 
     def get_incoming_current(self):
         """
         :return: Current incoming current
         """
-        return self.get_measurements().current_in
+        return self.get_measurements().avg_input_current
+
+    def get_controller_temp(self):
+        return self.get_measurements().temp_fet
+
+    def get_car_velocity(self, diameter):
+        rpm = self.get_rpm()
+        velocity = (rpm/4)*60 * 2*3.14*(diameter/2)/1000
+        return round(velocity)
+
 
 
 
